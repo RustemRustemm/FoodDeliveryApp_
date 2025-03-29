@@ -20,7 +20,9 @@ class ViewController: UIViewController {
         label.text = "Hello World!"
         label.textColor = .white
 //        label.font = UIFont.systemFont(ofSize: 40, weight: .regular)
-        label.font = UIFont.systemFont(ofSize: 40, weight: UIFont.Weight(rawValue: 20))
+//        label.font = UIFont.systemFont(ofSize: 40, weight: UIFont.Weight(rawValue: 20))
+        label.font = .Roboto.thin.size(of: 40)
+        
         label.textAlignment = .left
         label.numberOfLines = 0 // Многострочный текст
 //                label.backgroundColor = .lightGray // Для наглядности
