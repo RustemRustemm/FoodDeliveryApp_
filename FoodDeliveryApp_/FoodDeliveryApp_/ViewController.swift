@@ -18,10 +18,11 @@ class ViewController: UIViewController {
                 
         // Настраиваем свойства label
         label.text = "Hello World!"
-        label.textColor = .white
+//        label.textColor = .white
 //        label.font = UIFont.systemFont(ofSize: 40, weight: .regular)
 //        label.font = UIFont.systemFont(ofSize: 40, weight: UIFont.Weight(rawValue: 20))
-        label.font = .Roboto.thin.size(of: 40)
+//        label.font = .Roboto.thin.size(of: 40)
+        label.font = .Roboto.bold.size(of: 40)
         
         label.textAlignment = .left
         label.numberOfLines = 0 // Многострочный текст
@@ -44,8 +45,9 @@ class ViewController: UIViewController {
             label.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
         
-        
-        view.backgroundColor = .red
+        label.textColor = AppColors.accentOrange
+//        view.backgroundColor = .red
+        view.backgroundColor = AppColors.background
     }
 
 
