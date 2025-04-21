@@ -30,6 +30,11 @@ extension UIFont {
                 return UIFont(name: Constants.Roboto.boldItalic, size: size)!
             }
         }
+        enum regular {
+            static func size(of size: CGFloat) -> UIFont {
+                return UIFont(name: Constants.Roboto.regular, size: size)!
+            }
+        }
         enum thin {
             static func size(of size: CGFloat) -> UIFont {
                 return UIFont(name: Constants.Roboto.thin, size: size)!
@@ -40,6 +45,7 @@ extension UIFont {
                 return UIFont(name: Constants.Roboto.thinItalic, size: size)!
             }
         }
+
         
     }
     
