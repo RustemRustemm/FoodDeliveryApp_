@@ -113,7 +113,7 @@ extension OnboardingViewController {
     func setupBottomButton() {
         view.addSubview(bottomButton)
         bottomButton.translatesAutoresizingMaskIntoConstraints = false
-        bottomButton.action = buttonPressed
+        bottomButton.action = { [weak self] in self?.buttonPressed() }
 //        bottomButton.setColorScheme(scheme: .grey) // with "public func setColorScheme(scheme: FDButtonColorSchemes)" in FDButton
         bottomButton.scheme = .grey // with "private func setColorScheme(scheme: FDButtonColorSchemes)" in FDButton
 
