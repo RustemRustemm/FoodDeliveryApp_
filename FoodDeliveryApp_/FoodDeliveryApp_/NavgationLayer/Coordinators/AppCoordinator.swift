@@ -9,9 +9,22 @@ import UIKit
 
 class AppCoordinator: Coordinator {
         
+    private let userStorage = UserStorage.shared
+    private let factory = SceneFactory.self
+    
     override func start() {
 //        showOnboardingFlow()
-        showMainFlow()
+//        UserDefaults.standard.removeObject(forKey: "passedOnboarding")
+//        userStorage.passedOnboarding = false // при новом запуске программы показывает ознакомительное превью
+        if userStorage.passedOnboarding {
+            showAuthFlow()
+        } else {
+            showOnboardingFlow()
+        }
+        
+//        let loginPresenter = LoginPresenter(coordinator: self)
+//        let loginVC = LoginViewController(viewOutput: loginPresenter, state: .signIn)
+//        navigationController?.pushViewController(loginVC, animated: true)
     }
     
     override func finish() {
@@ -24,57 +37,37 @@ class AppCoordinator: Coordinator {
 private extension AppCoordinator {
     func showOnboardingFlow() {
         guard let navigationController = navigationController else { return }
-        let onboardingCoordinator = OnboardingCoordinator(type: .onboarding, navigationController: navigationController, finishDelegate: self)
-        addChildCoordinator(onboardingCoordinator)
+        let onboardingCoordinator = factory.makeOnboardingFlow(coordinator: self, finishDelegate: self, navigationController: navigationController)
         onboardingCoordinator.start()
     }
     
     func showMainFlow() {
-        
         guard let navigationController = navigationController else { return }
-        
-        let homeNavigationController = UINavigationController()
-        let homeCoordinator = HomeCoordinator(type: .home, navigationController: homeNavigationController)
-        homeNavigationController.tabBarItem = UITabBarItem(title: "Home", image: UIImage.init(systemName: "swirl.circle.righthalf.filled"), tag: 0)
-        homeCoordinator.finishDelegate = self
-        homeCoordinator.start()
-        
-        let orderNavigationController = UINavigationController()
-        let orderCoordinator = OrderCoordinator(type: .order, navigationController: orderNavigationController)
-        orderNavigationController.tabBarItem = UITabBarItem(title: "Order", image: UIImage.init(systemName: "swirl.circle.righthalf.filled"), tag: 1)
-        orderCoordinator.finishDelegate = self
-        orderCoordinator.start()
-        
-        let listNavigationController = UINavigationController()
-        let listCoordinator = ListCoordinator(type: .list, navigationController: listNavigationController)
-        listNavigationController.tabBarItem = UITabBarItem(title: "List", image: UIImage.init(systemName: "swirl.circle.righthalf.filled"), tag: 2)
-        listCoordinator.finishDelegate = self
-        listCoordinator.start()
-        
-        let profileNavigationController = UINavigationController()
-        let profileCoordinator = ProfileCoordinator(type: .profile, navigationController: profileNavigationController)
-        profileNavigationController.tabBarItem = UITabBarItem(title: "Profile", image: UIImage.init(systemName: "swirl.circle.righthalf.filled"), tag: 3)
-        profileCoordinator.finishDelegate = self
-        profileCoordinator.start()
-        
-        addChildCoordinator(homeCoordinator)
-        addChildCoordinator(orderCoordinator)
-        addChildCoordinator(listCoordinator)
-        addChildCoordinator(profileCoordinator)
-        
-        let tabBarControllers = [homeNavigationController, orderNavigationController, listNavigationController, profileNavigationController]
-        
-        let tabBarController = TabBarController(tabBarControllers: tabBarControllers)
-        
+        let tabBarController = factory.makeMainFlow(coordinator: self, finishDelegate: self)
         navigationController.pushViewController(tabBarController, animated: true)
-        
+    }
+    
+    func showAuthFlow() {
+        guard let navigationController = navigationController else { return }
+        let loginCoordinator = factory.makeLoginFlow(coordinator: self, finishDelegate: self, navigationController: navigationController)
+        loginCoordinator.start()
     }
 }
 
+
+//MARK: - FinishDelegate
 extension AppCoordinator: CoordinatorFinishDelegate {
     func coordinatorDidFinish(childCoordinator: any CoordinatorProtocol) {
         removeChildCoordinator(childCoordinator)
         switch childCoordinator.type {
+        case .onboarding:
+//            navigationController?.viewControllers.removeAll()
+            showAuthFlow()
+            navigationController?.viewControllers = [navigationController?.viewControllers.last ?? UIViewController()]
+        case .login:
+//            navigationController?.viewControllers.removeAll()
+            showMainFlow()
+            navigationController?.viewControllers = [navigationController?.viewControllers.last ?? UIViewController()]
         case .app:
             return
         default:
