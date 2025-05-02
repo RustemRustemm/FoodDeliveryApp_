@@ -16,11 +16,13 @@ class AppCoordinator: Coordinator {
 //        showOnboardingFlow()
 //        UserDefaults.standard.removeObject(forKey: "passedOnboarding")
 //        userStorage.passedOnboarding = false // при новом запуске программы показывает ознакомительное превью
-        if userStorage.passedOnboarding {
-            showAuthFlow()
-        } else {
-            showOnboardingFlow()
-        }
+//        if userStorage.passedOnboarding {
+//            showAuthFlow()
+//        } else {
+//            showOnboardingFlow()
+//        }
+        showMainFlow()
+        
         
 //        let loginPresenter = LoginPresenter(coordinator: self)
 //        let loginVC = LoginViewController(viewOutput: loginPresenter, state: .signIn)
