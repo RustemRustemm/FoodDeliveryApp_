@@ -11,6 +11,9 @@ class SmallHCViewCell: UICollectionViewCell {
     
     let topView = UIView()
     let bottomLabel = UILabel()
+    let imageView = UIImageView()
+    var isCategorySelected = false
+    
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -21,8 +24,53 @@ class SmallHCViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func configure(with category: FoodCategory) {
+        
+        bottomLabel.text = category.rawValue
+        
+        switch category {
+        case .drink:
+            print(category, isCategorySelected)
+            imageView.image = UIImage(resource: .drink).withTintColor(isCategorySelected ? .white : .black)
+        case .snack:
+            print(category, isCategorySelected)
+            imageView.image = UIImage(resource: .snack).withTintColor(isCategorySelected ? .white : .black)
+        case .food:
+            print(category, isCategorySelected)
+            imageView.image = UIImage(resource: .food).withTintColor(isCategorySelected ? .white : .black)
+        case .cake:
+            print(category, isCategorySelected)
+            imageView.image = UIImage(resource: .cake).withTintColor(isCategorySelected ? .white : .black)
+        case .salad:
+            print(category, isCategorySelected)
+            imageView.image = UIImage(resource: .salad).withTintColor(isCategorySelected ? .white : .black)
+        case .seafood:
+            print(category, isCategorySelected)
+            imageView.image = UIImage(resource: .seafood).withTintColor(isCategorySelected ? .white : .black)
+        case .none:
+            print(category, isCategorySelected)
+            imageView.image = UIImage(resource: .nopictures).withTintColor(isCategorySelected ? .white : .black)
+        }
+    }
+    
+    func toggleSelection() {
+        
+        isCategorySelected.toggle()
+        if isCategorySelected {
+            imageView.image = imageView.image?.withTintColor(.white)
+            topView.backgroundColor = AppColors.accentOrange
+            print(isCategorySelected)
+            
+        } else {
+            imageView.image = imageView.image?.withTintColor(.black)
+            topView.backgroundColor = AppColors.grey
+            print(isCategorySelected)
+        }
+        
+    }
+    
     func setupCell() {
-        contentView.backgroundColor = .blue
+        contentView.backgroundColor = .clear //.blue
         setupTopView()
         setupBottomLabel()
     }
@@ -31,7 +79,7 @@ class SmallHCViewCell: UICollectionViewCell {
         contentView.addSubview(topView)
         
         topView.translatesAutoresizingMaskIntoConstraints = false
-        topView.backgroundColor = .green
+        topView.backgroundColor = AppColors.grey
         topView.layer.cornerRadius = 20
         topView.layer.masksToBounds = true
         
@@ -42,6 +90,19 @@ class SmallHCViewCell: UICollectionViewCell {
             topView.heightAnchor.constraint(equalToConstant: 70),
             
         ])
+        
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+//        imageView.image = UIImage(named: "testImage")
+        topView.addSubview(imageView)
+        
+        NSLayoutConstraint.activate([
+            imageView.centerXAnchor.constraint(equalTo: topView.centerXAnchor),
+            imageView.centerYAnchor.constraint(equalTo: topView.centerYAnchor),
+            imageView.widthAnchor.constraint(equalToConstant: 30),
+            imageView.heightAnchor.constraint(equalToConstant: 30)
+        ])
     }
     
     func setupBottomLabel() {
@@ -49,7 +110,7 @@ class SmallHCViewCell: UICollectionViewCell {
         
         bottomLabel.font = .Roboto.regular.size(of: 14)
         bottomLabel.text = "test label"
-        bottomLabel.textColor = .white
+        bottomLabel.textColor = AppColors.black //.white
         
         bottomLabel.translatesAutoresizingMaskIntoConstraints = false
         

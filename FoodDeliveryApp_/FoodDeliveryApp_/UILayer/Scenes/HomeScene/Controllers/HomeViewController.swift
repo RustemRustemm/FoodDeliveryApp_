@@ -8,7 +8,11 @@
 import UIKit
 
 class HomeViewController: UIViewController {
+        
+    //MARK: - Properties
+    let presenter: HomePresenterProtocol
     
+    //MARK: - Views
     private let scrollView = UIScrollView()
     private let contentView = UIView()
     private let seacrhField = FDSearchField()
@@ -29,7 +33,6 @@ class HomeViewController: UIViewController {
         collection.tag = 1
         return collection
     }()
-    
     lazy var bigHCollection: UICollectionView = {
         
         let layout = UICollectionViewFlowLayout()
@@ -44,7 +47,6 @@ class HomeViewController: UIViewController {
         
         
     }()
-    
     lazy var bigVCollection: UICollectionView = {
         
         let layout = UICollectionViewFlowLayout()
@@ -61,14 +63,24 @@ class HomeViewController: UIViewController {
         
         
     }()
+    
+    //MARK: - Initializers
+    init(presenter: HomePresenterProtocol) {
+        self.presenter = presenter
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
+    //MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
  
         setupLayout()
     }
 }
-
 
 //MARK: - Layout
 extension HomeViewController {
@@ -194,11 +206,12 @@ extension HomeViewController {
     func setupSmallHCollection() {
         contentView.addSubview(smallHCollection)
         
-        smallHCollection.backgroundColor = .red
+        smallHCollection.backgroundColor = .clear //.red
         smallHCollection.translatesAutoresizingMaskIntoConstraints = false
         smallHCollection.delegate = self
         smallHCollection.dataSource = self
         smallHCollection.register(SmallHCViewCell.self, forCellWithReuseIdentifier: "SmallHCViewCell")
+        smallHCollection.showsHorizontalScrollIndicator = false
         
         NSLayoutConstraint.activate([
 //            smallHCollection.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 100),
@@ -286,7 +299,7 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         
             switch collectionView.tag {
             case 1:
-                return 30
+                return presenter.categoryData.count
             case 2:
                 return 15
             case 3:
@@ -300,8 +313,10 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         
         switch collectionView.tag {
         case 1:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SmallHCViewCell", for: indexPath)
-            return cell
+            let category = presenter.categoryData[indexPath.row]
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SmallHCViewCell", for: indexPath) as? SmallHCViewCell
+            cell?.configure(with: category)
+            return cell ?? UICollectionViewCell()
         case 2:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "BigHCViewCell", for: indexPath)
             return cell
@@ -310,6 +325,21 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
             return cell
         default:
             return UICollectionViewCell()
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        switch collectionView.tag {
+        case 1:
+            let cell = collectionView.cellForItem(at: indexPath) as? SmallHCViewCell
+            cell?.toggleSelection()
+        case 2:
+            print()
+        case 3:
+            print()
+        default:
+            print()
         }
     }
 }
